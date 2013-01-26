@@ -1,0 +1,42 @@
+<div class="commentsList">
+{% for comment in comments %}
+	{% if comment.message %}
+	<div class="comment">
+		<span class="authorName">{{ comment.author_name }}</span>
+		<div class="commentMessage">{{ comment.message }}</div>
+	</div>
+	{% else %}
+	<div class="comment silentComment">
+		<div class="commentMessage">{{ comment.author_name }} отмечает свой интерес к этому.</div>
+	</div>
+	{% endif %}
+{% endfor %}
+</div>
+
+<script>
+$(document).ready(function(){
+	$('#submit').click(function(){
+		$.ajax({
+	       	type: "POST",
+	        url: "{{ form_target }}",
+	        // data: new FormData(document.getElementById("commentFormItself")),
+	        data: { 'name': $('[name=name]').val(), 'info': $('[name=info]').val(), 'message': $('[name=message]').val() },
+	        success: function(answer) {
+	            $('.commentsList').parent().html(answer);
+	        },
+	        error: function(answer) {
+	            alert("jQuery Error: " + answer.statusText);
+	        }
+	    });
+	});
+});
+</script>
+<div class="commentForm">
+<form id="commentFormItself">
+	<input type="text" name="name" {% if form_default_values.name %}value="{{ form_default_values.name }}"{% else %}placeholder="имя"{% endif %}>
+	<input type="text" name="info" {% if form_default_values.info %}value="{{ form_default_values.info }}"{% else %}placeholder="email или что-нибудь в этом роде"{% endif %}>
+	<textarea name="message"></textarea>
+
+	<input type="button" id="submit" value="Отправить">
+</form>
+</div>

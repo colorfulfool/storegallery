@@ -1,0 +1,23 @@
+{% extends "root.html" %}
+{% block content %}
+<div class="container main">
+	<header>
+		{{ todays_message }}. {{ objects.__len__() }} {{ pluralize(objects.__len__(), 'картинка') }}.
+	</header>
+
+	<div class="itemsList">
+		{% for object in objects %}
+		{% with thumbnail = thumbnail_for(object.cover_image_url(), height=300, full_object=True) %}
+		<div class="item" style="max-width: {{ thumbnail.thumbnail_width + 50 }}">
+			<a href="{{ object.url() }}"><img src="{{ thumbnail.thumbnail }}"></a>
+			{% if object.title %}<span class="itemTitle">{{ object.title }}</span>{% endif %}
+			{% if object.description %}<span class="itemDescription">{{ object.description }}</span>{% endif %}
+			{% with comments_count = comments_count_for(object) %}
+			<span class="commentsCount">{{ comments_count }} {{ pluralize(comments_count, 'комментарий') }}</span>
+			{% endwith %}
+		</div>
+		{% endwith %}
+		{% endfor %}
+	</div>
+</div>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "root.html" %}
+{% block title %}{{ picture.title }}{% endblock %}
+{% block content %}
+<div class="container picture">
+	<div class="mainPicture">
+		<img class="downsampled" style="max-width:100%" src="{{ thumbnail_for(picture.image_url, width=900) }}" fullsize="{{ picture.image_url }}">
+		<p class="picturePageTitle">{{ picture.title }}</p>
+	</div>
+	
+
+	<div class="commentsBlock">
+	{{ comments_block_for(picture) }}
+	</div>
+</div>
+{% endblock %}
