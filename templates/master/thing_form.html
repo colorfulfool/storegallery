@@ -1,0 +1,41 @@
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+<link href="/static/res/master_style.css" type="text/css" media="all" rel="stylesheet" />
+
+<h1>Добавить штуку</h1>
+
+<form method="POST" enctype="multipart/form-data">
+	<p><label for="title">title</label><input type="text" name="title"></p>
+	<p><label for="description">description</label><input type="text" name="description"></p>
+	<p><input type="button" id="submitButton" value="Отправить"></p>
+</form>
+<div id="editor" style="height: 80%; width: 100%; display: table;"></div>
+
+<p class='response'></p>
+
+<script>
+var e=ace.edit("editor");
+e.setTheme("ace/theme/twilight");
+e.getSession().setMode("ace/mode/html");
+$('#editor').css('font-size', '14px');	
+
+$('#submitButton').click(function() {
+	$.ajax({
+		type: "POST",
+		url: "/create-item/Thing/",
+		data: {
+			'title': $('[name=title]').val(),
+			'description': $('[name=description]').val(),
+			'content': e.getValue()
+		},
+		success: function(result) {
+			$('.response').attr('class', 'response good');
+			$('.response').html(result);
+		},
+		error: function(result) {
+			$('.response').attr('class', 'response bad');
+			$('.response').html(result);
+		}
+	});
+});
+</script>
