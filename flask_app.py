@@ -54,19 +54,23 @@ def perform_visitor_tagging():
 
 		session['tagged'] = '{0}'.format(visitor_object['id'])
 
-def level_required(view_function, level):
-	def decorated(*args, **kwargs):
-		try:
-			this_user = query('select level from users where id = ?', [session['logged']])
+def level_required(level):
+	def real_decorator(view_function):
+		def wrapper(*args, **kwargs):
+			this_user_level = 3
 
-			if this_user['level'] <= level:
+			try:
+				this_user = query('select level from users where id = ?', [session['logged']])
+				this_user_level = this_user['level']
+			except KeyError:
+				pass
+
+			if this_user_level <= level:
 				return view_function(*args, **kwargs)
 			else:
 				abort(401)
-		except KeyError:
-			abort(401)
-
-	return decorated
+		return wrapper
+	return real_decorator
 
 @app.context_processor
 def misc_utilites():
@@ -244,6 +248,7 @@ def login():
 		return redirect(request.referrer)
 
 @app.route("/create-item/<object_class>/", methods=['POST', 'GET'])
+@level_required(0)
 def post_to_database(object_class):
 	if request.method == 'POST':
 		object_to_post = globals()[object_class]()
