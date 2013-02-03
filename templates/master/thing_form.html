@@ -8,16 +8,15 @@
 	<p><label for="title">title</label><input type="text" name="title"></p>
 	<p><label for="description">description</label><input type="text" name="description"></p>
 	<p><input type="button" id="submitButton" value="Отправить"></p>
+	<p class='response'></p>
 </form>
 <div id="editor" style="height: 80%; width: 100%; display: table;"></div>
-
-<p class='response'></p>
 
 <script>
 var e=ace.edit("editor");
 e.setTheme("ace/theme/twilight");
 e.getSession().setMode("ace/mode/html");
-$('#editor').css('font-size', '14px');	
+$('#editor').css('font-size', '14px');
 
 $('#submitButton').click(function() {
 	$.ajax({

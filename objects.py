@@ -45,7 +45,8 @@ class Picture(DatabaseObject):
 		return self['image_url']
 
 class Thing(DatabaseObject):
-	pass
+	def cover_image_url(self):
+		return '/static/placeholder.jpg'
 
 class Comment(DatabaseObject):
 	pass

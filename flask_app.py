@@ -79,7 +79,14 @@ def misc_utilites():
 	def pluralize(number, word):
 		return morpher.pluralize_inflected_ru(word.upper(), number).lower()
 
-	return {'pluralize': pluralize}
+	def is_logged_in():
+		try:
+			int(session['logged'])
+			return True
+		except (ValueError, KeyError):
+			return False
+
+	return {'pluralize': pluralize, 'is_logged_in': is_logged_in }
 
 @app.context_processor
 def thumbnail_maker():
@@ -237,15 +244,17 @@ def thing_page(object_id):
 
 	return render_template('thing_page.html', thing = thing_object)
 
-@app.route("/log-in/", methods=['GET', 'POST'])
+@app.route("/log-in/", methods=['POST'])
 def login():
 	if request.method == 'POST':
-		user_object = query(u"select password, id from users where username = ?", [request.form['username']])
+		user_object = query(u"select password_hash, id from users where username = ?", [request.form['username']])
 
-		if sha256(sha256(request.form['password']).hexdigest() + 'sugar').hexdigest() == sha256(sha256(user_object['password_hash']).hexdigest() + 'sugar').hexdigest():
+		if sha256(sha256(request.form['password']).hexdigest() + 'sugar').hexdigest() == user_object['password_hash']:
 			session['logged'] = user_object['id']
 
-		return redirect(request.referrer)
+			return redirect(request.referrer)
+		else:
+			return render_template("login_form.html")
 
 @app.route("/create-item/<object_class>/", methods=['POST', 'GET'])
 @level_required(0)
@@ -269,7 +278,14 @@ def post_to_database(object_class):
 		return '{object_class} saved successfully.'.format(object_class=object_class)
 
 	if request.method == 'GET':
-		return render_template('master/{object_class}_form.html'.format(object_class=object_class.lower()))
+		return render_template('master/{object_class}_form.html'.format(object_class=object_class.lower()), data_object=None)
+
+# @app.route("/update-item/<object_class>/<int:object_id>/")
+# def filled_form_for_object(object_class, object_id):
+# 	object_to_update = globals()[object_class]()
+# 	object_to_update = query('select * from {table} where id = ?'.format(table=object_to_update.table_name), [object_id], entity=object_to_update.__class__)
+
+# 	return render_template('master/{object_class}_form.html'.format(object_class=object_class.lower()), data_object=object_to_update)
 
 if __name__ == '__main__':
 	app.run()

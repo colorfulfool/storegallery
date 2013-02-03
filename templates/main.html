@@ -2,8 +2,9 @@
 {% block content %}
 <div class="container main">
 	<header>
-		{{ todays_message }}. {{ objects.__len__() }} {{ pluralize(objects.__len__(), 'картинка') }}.
+		{{ todays_message }}. {{ objects.__len__() }} {{ pluralize(objects.__len__(), 'запись') }}.
 	</header>
+	{% include "login_form.html" %}
 
 	<div class="itemsList">
 		{% for object in objects %}

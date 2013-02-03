@@ -55,7 +55,7 @@ create table things (
   content string,
   title string,
   description string,
-  sent datetime,
+  sent datetime default(datetime('now','localtime')),
   views int default(0)
 );
 
