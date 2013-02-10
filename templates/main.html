@@ -4,7 +4,7 @@
 	<header>
 		{{ todays_message }}. {{ objects.__len__() }} {{ pluralize(objects.__len__(), 'запись') }}.
 	</header>
-	{% include "login_form.html" %}
+	<!-- {% include "login_form.html" %} -->
 
 	<div class="itemsList">
 		{% for object in objects %}

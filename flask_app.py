@@ -8,6 +8,7 @@ from hashlib import sha256, md5
 from pymorphy import get_morph
 import Image
 import os
+from functools import wraps
 
 from objects import *
 
@@ -56,6 +57,7 @@ def perform_visitor_tagging():
 
 def level_required(level):
 	def real_decorator(view_function):
+		@wraps(view_function)
 		def wrapper(*args, **kwargs):
 			this_user_level = 3
 
